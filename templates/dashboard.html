@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Welcome, {{ username }} 👋</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        {% if edit_id %}Edit{% else %}Add{% endif %} Exam
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('dashboard') }}">
+            {{ form.hidden_tag() }}
+            {% if edit_id %}
+                <input type="hidden" name="exam_id" value="{{ edit_id }}">
+            {% endif %}
+
+            <div class="mb-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.date.label(class="form-label") }}
+                {{ form.date(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.application_file.label(class="form-label") }}
+                {{ form.application_file(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.fee_file.label(class="form-label") }}
+                {{ form.fee_file(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+</div>
+
+<h3 class="mb-3">Your Exams</h3>
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Application File</th>
+            <th>Fee Receipt</th>
+            <th>Completed</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for exam in exams %}
+        <tr {% if exam.is_completed %}class="table-success"{% endif %}>
+            <td>{{ exam.name }}</td>
+            <td>{{ exam.date.strftime('%d-%m-%Y') }}</td>
+            <td>
+                {% if exam.application_file %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ exam.application_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">📄 View</a>
+                {% else %}
+                    <span class="text-danger">❌</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if exam.fee_file %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ exam.fee_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">📄 View</a>
+                {% else %}
+                    <span class="text-danger">❌</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('toggle_exam', id=exam.id) }}">
+                    <input type="checkbox" class="form-check-input" onChange="this.form.submit()" {% if exam.is_completed %}checked{% endif %}>
+                </form>
+            </td>
+            <td>
+                <a href="{{ url_for('edit_exam', id=exam.id) }}" class="btn btn-sm btn-warning">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
+{% endblock %}

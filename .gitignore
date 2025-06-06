@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# Flask uploads and static files (optional: if you don't want to track uploads)
+static/uploads/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Environment variables file
+.env
+
+# PyCharm
+*.iml
